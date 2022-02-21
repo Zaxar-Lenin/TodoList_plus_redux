@@ -1,69 +1,69 @@
-import React, { useState } from 'react';
-import './App.css';
-import { Task } from './component/Task';
-import { Todolist } from './component/TodoList';
-import { TypeTaskAr } from './component/TodoList';
+import React from 'react';
+import {TaskType} from './Components/Tasks/Tasks';
+import TodoList from "./Components/TodoList";
+import {TodoListType} from "./redux/reducer-todolist";
+import {InputSuper} from "./Components/InputSuper/InputSuper";
+import {v1} from "uuid";
+
+type AppPropsType = {
+    addTask: (title: string, ID: string) => void,
+    removeTask: (idTask: string, ID: string) => void,
+    updeteCheckedInputFalse: (IdTask: string, ID: string) => void,
+    updeteCheckedInputTrue: (IdTask: string, ID: string) => void,
+    onClickButtonFilter: (value: FilterValueType, ID: string) => void,
+    addTodoList: (title: string, ID: string) => void,
+    add: (ID: string) => void,
+    removeTodoList: (ID: string) => void
+
+    tasks: {
+        [key: string]: TaskType[]
+    }
+    todoLists: TodoListType[]
+}
+
+export type FilterValueType = "all" | "comlited" | "active"
 
 
-export type TypeFilteer = "all" | "active" | "completed"
+const App: React.FC<AppPropsType> = ({
+                                         tasks,
+                                         addTask,
+                                         removeTask,
+                                         updeteCheckedInputFalse,
+                                         updeteCheckedInputTrue,
+                                         onClickButtonFilter,
+                                         todoLists,
+                                         add,
+                                         removeTodoList,
+    addTodoList
+                                     }) => {
 
-function App() {
-
-  // let task1: Array<TypeTaskAr> = [
-  //   { id: 1, isDone: true, title: "milk"},
-  //   { id: 2, isDone: true, title: "beer"},
-  //   { id: 3, isDone: true, title: "pool"},
-  //   { id: 4, isDone: true, title: "beer"},
-  //   { id: 5, isDone: true, title: "pool"}
-  // ]
-
-  let [tasks, setTasks] = useState <Array<TypeTaskAr>> (
-    [
-      { id: 1, isDone: true, title: "milk"},
-      { id: 2, isDone: true, title: "beer"},
-      { id: 3, isDone: false, title: "pool"},
-      { id: 4, isDone: true, title: "beer"},
-      { id: 5, isDone: false, title: "pool"}
-    ]
-  )
-  let [filteer, setFilteer] = useState<TypeFilteer>("all")
-
-const train = () => {
-        switch(filteer){
-          case "completed":
-            return tasks.filter(t => t.isDone)
-          case "active":
-            return tasks.filter(t => !t.isDone)
-          default:
-            return tasks
+    let todoList = todoLists && todoLists.map(m => {
+            let startTasks = tasks[m.id]
+            if (m.filter === "comlited") {
+                startTasks = tasks[m.id].filter(f => f.isDone)
+            } else if (m.filter === "active") {
+                startTasks = tasks[m.id].filter(f => !f.isDone)
+            }
+            return (
+                <TodoList removeTodoList={removeTodoList} updeteCheckedInputTrue={updeteCheckedInputTrue} addTask={addTask} removeTask={removeTask}
+                          updeteCheckedInputFalse={updeteCheckedInputFalse}
+                          onClickButtonFilter={onClickButtonFilter} key={m.id} tasks={startTasks} title={m.title}
+                          ID={m.id} filter={m.filter}/>)
         }
-  }
-  const filedFuc = (filteer: TypeFilteer) => {
-      setFilteer(filteer)
-  }
+    )
 
-  // const task2: Array<TypeTaskAr> = [
-  //   { id: 4, isDone: true, title: "milk"},
-  //   { id: 5, isDone: true, title: "beer"},
-  //   { id: 6, isDone: true, title: "pool"}
-  // ]
- const removeTask = (id: number) => {
-      const fifledBi = tasks.filter(t => id !== t.id)
-      setTasks(fifledBi)
-  }
+    const addItemTodo = (title: string) =>{
+        const IDTodoList = v1()
+        addTodoList(title,IDTodoList)
+        add(IDTodoList)
+    }
 
- 
-  return (
-    <div className="App">
-        <Todolist 
-            title='Zaxar'
-            task = {train()}
-            removeTask = {removeTask}
-            filedFuc = {filedFuc}
-            />
-        {/* <Todolist title='Maksim' task = {task2}/> */}
-    </div>
-  );
+    return (
+        <div className="App">
+            <InputSuper  callBack={addItemTodo}/>
+            <div className="box">{todoList}</div>
+        </div>
+    )
 }
 
 export default App;

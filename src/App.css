@@ -1,8 +1,15 @@
-.todo {
+.App {
+  padding: 30px;
+  display: grid;
+  flex-wrap: wrap;
 }
-.App{
-  max-width: 300px;
+
+.App > div {
+  margin-right: 50px;
 }
-.bt{
+
+.box{
+  padding: 30px;
   display: flex;
+  flex-wrap: wrap;
 }
