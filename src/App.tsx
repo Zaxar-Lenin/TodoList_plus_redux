@@ -34,7 +34,7 @@ const App: React.FC<AppPropsType> = ({
                                          todoLists,
                                          add,
                                          removeTodoList,
-    addTodoList
+                                         addTodoList
                                      }) => {
 
     let todoList = todoLists && todoLists.map(m => {
@@ -45,22 +45,23 @@ const App: React.FC<AppPropsType> = ({
                 startTasks = tasks[m.id].filter(f => !f.isDone)
             }
             return (
-                <TodoList removeTodoList={removeTodoList} updeteCheckedInputTrue={updeteCheckedInputTrue} addTask={addTask} removeTask={removeTask}
+                <TodoList removeTodoList={removeTodoList} updeteCheckedInputTrue={updeteCheckedInputTrue} addTask={addTask}
+                          removeTask={removeTask}
                           updeteCheckedInputFalse={updeteCheckedInputFalse}
                           onClickButtonFilter={onClickButtonFilter} key={m.id} tasks={startTasks} title={m.title}
                           ID={m.id} filter={m.filter}/>)
         }
     )
 
-    const addItemTodo = (title: string) =>{
+    const addItemTodo = (title: string) => {
         const IDTodoList = v1()
-        addTodoList(title,IDTodoList)
+        addTodoList(title, IDTodoList)
         add(IDTodoList)
     }
 
     return (
         <div className="App">
-            <InputSuper  callBack={addItemTodo}/>
+            <InputSuper callBack={addItemTodo}/>
             <div className="box">{todoList}</div>
         </div>
     )
